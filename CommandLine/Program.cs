@@ -23,6 +23,8 @@ builder.Services.AddOptions<LoggingOptions>()
 
 builder.Services.AddHostedService<ConsoleHost>();
 
+builder.Services.AddLogging();
+
 using var host = builder.Build();
 
 await host.StartAsync();
