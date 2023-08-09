@@ -1,8 +1,7 @@
 #region
 
-using Common.Options;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 #endregion
 
@@ -10,18 +9,16 @@ namespace CommandLine;
 
 public class ConsoleHost : IHostedService
 {
-    private ConnectionOptions _connectionOptions;
-    private LoggingOptions _loggingOptions;
+    private readonly ILogger<ConsoleHost> _logger;
 
-    public ConsoleHost(IOptions<ConnectionOptions> connectionOptions, IOptions<LoggingOptions> loggingOptions)
+    public ConsoleHost(ILogger<ConsoleHost> logger)
     {
-        _connectionOptions = connectionOptions.Value;
-        _loggingOptions = loggingOptions.Value;
+        _logger = logger;
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        Console.WriteLine("Welcome to EvlDaemon.");
+        _logger.LogInformation("Welcome to EvlDaemon");
 
         return Task.CompletedTask;
     }
