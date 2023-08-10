@@ -5,6 +5,7 @@ using Common.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Network;
 
 #endregion
 
@@ -22,6 +23,7 @@ builder.Services.AddOptions<LoggingOptions>()
     .Bind(builder.Configuration.GetSection("Logging"));
 
 builder.Services.AddHostedService<ConsoleHost>();
+builder.Services.AddHostedService<NetworkService>();
 
 builder.Services.AddLogging();
 
