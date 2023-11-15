@@ -1,9 +1,11 @@
 ﻿using System.Net;
 using System.Net.Sockets;
+using Common.Options;
+using Microsoft.Extensions.Options;
 
 namespace Network;
 
-public sealed class EvlClient : IDisposable
+public sealed class NetworkEvlClient : IDisposable, IEvlClient
 {
     public readonly int Port;
 
@@ -13,9 +15,14 @@ public sealed class EvlClient : IDisposable
 
     private const int BufferSize = 1024;
     
-    public EvlClient(int port, IPAddress ipAddress)
+    public NetworkEvlClient(IOptions<ConnectionOptions> connectionOptions)
     {
-        Port = port;
+        Port = connectionOptions.Value.Port;
+
+        if (!IPAddress.TryParse(connectionOptions.Value.Ip, out var ipAddress))
+        {
+            throw new ConfigurationException($"Invalid IP address format: {connectionOptions.Value.Ip}");
+        }
 
         IpAddress = ipAddress;
 

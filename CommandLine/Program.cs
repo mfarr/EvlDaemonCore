@@ -23,7 +23,10 @@ builder.Services.AddOptions<LoggingOptions>()
     .Bind(builder.Configuration.GetSection("Logging"));
 
 builder.Services.AddHostedService<ConsoleHost>();
+
 builder.Services.AddHostedService<NetworkService>();
+
+builder.Services.AddSingleton<IEvlClient, NetworkEvlClient>();
 
 builder.Services.AddLogging();
 

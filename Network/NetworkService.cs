@@ -10,16 +10,11 @@ public class NetworkService : IHostedService
 {
     private readonly ILogger<NetworkService> _logger;
 
-    private readonly EvlClient _evlClient;
+    private readonly IEvlClient _evlClient;
     
-    public NetworkService(IOptions<ConnectionOptions> options, ILogger<NetworkService> logger)
+    public NetworkService(IEvlClient evlClient, ILogger<NetworkService> logger)
     {
-        if (!IPAddress.TryParse(options.Value.Ip, out var ipAddress))
-        {
-            throw new ConfigurationException($"Invalid IP address format: {options.Value.Ip}");
-        }
-
-        _evlClient = new EvlClient(options.Value.Port, ipAddress);
+        _evlClient = evlClient;
 
         _logger = logger;
     }
@@ -35,7 +30,7 @@ public class NetworkService : IHostedService
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
-        _logger.LogDebug("Closing connection to {IpAddress} on {Port}", _evlClient.IpAddress, _evlClient.Port); 
+        _logger.LogDebug("Stopping network service");
         
         _evlClient.Disconnect();
         
