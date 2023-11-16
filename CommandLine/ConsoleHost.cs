@@ -1,9 +1,5 @@
-#region
-
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-
-#endregion
 
 namespace CommandLine;
 
@@ -25,6 +21,8 @@ public class ConsoleHost : IHostedService
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        _logger.LogDebug("Stopping EvlDaemon...");
+
+        return Task.CompletedTask;
     }
 }

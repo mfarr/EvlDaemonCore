@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using Common.Options;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Network;
@@ -13,9 +14,11 @@ public sealed class NetworkEvlClient : IDisposable, IEvlClient
 
     private readonly TcpClient _tcpClient;
 
+    private readonly ILogger<NetworkEvlClient> _logger;
+
     private const int BufferSize = 1024;
     
-    public NetworkEvlClient(IOptions<ConnectionOptions> connectionOptions)
+    public NetworkEvlClient(IOptions<ConnectionOptions> connectionOptions, ILogger<NetworkEvlClient> logger)
     {
         Port = connectionOptions.Value.Port;
 
@@ -27,6 +30,8 @@ public sealed class NetworkEvlClient : IDisposable, IEvlClient
         IpAddress = ipAddress;
 
         _tcpClient = new TcpClient();
+
+        _logger = logger;
     }
 
     public void Connect()
@@ -39,7 +44,7 @@ public sealed class NetworkEvlClient : IDisposable, IEvlClient
         _tcpClient.Connect(IpAddress, Port);
     }
 
-    public async Task ListenForEventsAsync()
+    public async Task ListenForEventsAsync(CancellationToken ct)
     {
         if (!_tcpClient.Connected)
         {
@@ -50,29 +55,44 @@ public sealed class NetworkEvlClient : IDisposable, IEvlClient
 
         var stream = _tcpClient.GetStream();
 
-        var bytesRead = await stream.ReadAsync(buffer.AsMemory(0, BufferSize));
+        var bytesRead = await stream.ReadAsync(buffer.AsMemory(0, BufferSize), ct);
 
-        while (bytesRead > 0)
+        while (bytesRead > 0 && !ct.IsCancellationRequested)
         {
             Console.WriteLine(System.Text.Encoding.UTF8.GetString(buffer));
-            
-            bytesRead = await stream.ReadAsync(buffer.AsMemory(0, BufferSize));
+
+            try
+            {
+                bytesRead = await stream.ReadAsync(buffer.AsMemory(0, BufferSize), ct);
+            }
+            catch (OperationCanceledException e)
+            {
+                _logger.LogDebug(e, "Forcibly cancelling network read...");
+            }
+            catch (IOException e) when (e.InnerException is SocketException)
+            {
+                _logger.LogDebug("Connection aborted, stopping event listener...");
+
+                // TODO: Create & use linked cancellation token?
+                break;
+            }
         }
     }
 
     public void Disconnect()
     {
-        if (_tcpClient.Connected)
+        if (_tcpClient is {Connected: true})
         {
+            _logger.LogDebug("Disconnecting from EVL device...");
+            
             _tcpClient.Close();
         }
     }
 
     public void Dispose()
     {
-        if (_tcpClient is {Connected: true})
-        {
-            _tcpClient.Close();
-        }
+        _logger.LogDebug("Disposing NetworkEvlClient...");
+        
+        Disconnect();
     }
 }

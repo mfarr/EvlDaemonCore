@@ -1,13 +1,9 @@
-﻿#region
-
-using CommandLine;
+﻿using CommandLine;
 using Common.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Network;
-
-#endregion
 
 var builder = Host.CreateApplicationBuilder(args);
 
@@ -32,4 +28,5 @@ builder.Services.AddLogging();
 
 using var host = builder.Build();
 
-await host.StartAsync();
+host.Run();
+
