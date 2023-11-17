@@ -1,15 +1,16 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Network;
 
-namespace Network;
+namespace Service;
 
-public class NetworkService : BackgroundService
+public class EvlDaemonService : BackgroundService
 {
-    private readonly ILogger<NetworkService> _logger;
+    private readonly ILogger<EvlDaemonService> _logger;
 
     private readonly IEvlClient _evlClient;
     
-    public NetworkService(IEvlClient evlClient, ILogger<NetworkService> logger)
+    public EvlDaemonService(IEvlClient evlClient, ILogger<EvlDaemonService> logger)
     {
         _evlClient = evlClient;
 

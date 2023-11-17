@@ -1,4 +1,4 @@
-﻿using CommandLine;
+﻿using Service;
 using Common.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,7 +20,7 @@ builder.Services.AddOptions<LoggingOptions>()
 
 builder.Services.AddHostedService<ConsoleHost>();
 
-builder.Services.AddHostedService<NetworkService>();
+builder.Services.AddHostedService<EvlDaemonService>();
 
 builder.Services.AddSingleton<IEvlClient, NetworkEvlClient>();
 
