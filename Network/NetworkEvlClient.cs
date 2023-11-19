@@ -17,6 +17,8 @@ public sealed class NetworkEvlClient : IDisposable, IEvlClient
     private readonly ILogger<NetworkEvlClient> _logger;
 
     private const int BufferSize = 1024;
+
+    private readonly CancellationTokenSource _cancellationTokenSource;
     
     public NetworkEvlClient(IOptions<ConnectionOptions> connectionOptions, ILogger<NetworkEvlClient> logger)
     {
@@ -32,6 +34,9 @@ public sealed class NetworkEvlClient : IDisposable, IEvlClient
         _tcpClient = new TcpClient();
 
         _logger = logger;
+
+        _cancellationTokenSource = new CancellationTokenSource();
+        
     }
 
     public void Connect()
@@ -44,37 +49,40 @@ public sealed class NetworkEvlClient : IDisposable, IEvlClient
         _tcpClient.Connect(IpAddress, Port);
     }
 
-    public async Task ListenForEventsAsync(CancellationToken ct)
+    public async Task ListenForEventsAsync(CancellationToken externalCancellationToken)
     {
         if (!_tcpClient.Connected)
         {
             throw new InvalidOperationException("EvlClient must be connected before it can listen for events.");
         }
 
+        // TODO: Add check for already listening
+
+        var internalCancellationToken = _cancellationTokenSource.Token;
+
+        using var linkedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(internalCancellationToken, externalCancellationToken);
+
+        var linkedToken = linkedTokenSource.Token;
+
         var buffer = new byte[BufferSize];
 
         var stream = _tcpClient.GetStream();
 
-        var bytesRead = await stream.ReadAsync(buffer.AsMemory(0, BufferSize), ct);
+        var bytesRead = await stream.ReadAsync(buffer.AsMemory(0, BufferSize), linkedToken);
 
-        while (bytesRead > 0 && !ct.IsCancellationRequested)
+        while (bytesRead > 0 && !linkedToken.IsCancellationRequested)
         {
-            Console.WriteLine(System.Text.Encoding.UTF8.GetString(buffer));
+            _logger.LogTrace("Received: {Data} ", System.Text.Encoding.UTF8.GetString(buffer));
+
+            // TODO: Parse data
 
             try
             {
-                bytesRead = await stream.ReadAsync(buffer.AsMemory(0, BufferSize), ct);
+                bytesRead = await stream.ReadAsync(buffer.AsMemory(0, BufferSize), linkedToken);
             }
             catch (OperationCanceledException e)
             {
-                _logger.LogDebug(e, "Forcibly cancelling network read...");
-            }
-            catch (IOException e) when (e.InnerException is SocketException)
-            {
-                _logger.LogDebug("Connection aborted, stopping event listener...");
-
-                // TODO: Create & use linked cancellation token?
-                break;
+                _logger.LogDebug("Cancellation requested...");
             }
         }
     }
@@ -84,6 +92,8 @@ public sealed class NetworkEvlClient : IDisposable, IEvlClient
         if (_tcpClient is {Connected: true})
         {
             _logger.LogDebug("Disconnecting from EVL device...");
+
+            _cancellationTokenSource.Cancel();
             
             _tcpClient.Close();
         }
