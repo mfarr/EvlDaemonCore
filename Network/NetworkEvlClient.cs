@@ -8,13 +8,15 @@ namespace Network;
 
 public sealed class NetworkEvlClient : IDisposable, IEvlClient
 {
-    public readonly int Port;
+    private readonly int _port;
 
-    public readonly IPAddress IpAddress;
+    private readonly IPAddress _ipAddress;
 
     private readonly TcpClient _tcpClient;
 
     private readonly ILogger<NetworkEvlClient> _logger;
+
+    private bool _listening;
 
     private const int BufferSize = 1024;
 
@@ -22,18 +24,20 @@ public sealed class NetworkEvlClient : IDisposable, IEvlClient
     
     public NetworkEvlClient(IOptions<ConnectionOptions> connectionOptions, ILogger<NetworkEvlClient> logger)
     {
-        Port = connectionOptions.Value.Port;
+        _port = connectionOptions.Value.Port;
 
         if (!IPAddress.TryParse(connectionOptions.Value.Ip, out var ipAddress))
         {
             throw new ConfigurationException($"Invalid IP address format: {connectionOptions.Value.Ip}");
         }
 
-        IpAddress = ipAddress;
+        _ipAddress = ipAddress;
 
         _tcpClient = new TcpClient();
 
         _logger = logger;
+
+        _listening = false;
 
         _cancellationTokenSource = new CancellationTokenSource();
         
@@ -46,7 +50,7 @@ public sealed class NetworkEvlClient : IDisposable, IEvlClient
             throw new InvalidOperationException("EvlClient is already connected.");
         }
         
-        _tcpClient.Connect(IpAddress, Port);
+        _tcpClient.Connect(_ipAddress, _port);
     }
 
     public async Task ListenForEventsAsync(CancellationToken externalCancellationToken)
@@ -56,7 +60,12 @@ public sealed class NetworkEvlClient : IDisposable, IEvlClient
             throw new InvalidOperationException("EvlClient must be connected before it can listen for events.");
         }
 
-        // TODO: Add check for already listening
+        if (_listening)
+        {
+            throw new InvalidOperationException("EvlClient is already listening for events!");
+        }
+
+        _listening = true;
 
         var internalCancellationToken = _cancellationTokenSource.Token;
 
@@ -85,18 +94,22 @@ public sealed class NetworkEvlClient : IDisposable, IEvlClient
                 _logger.LogDebug("Cancellation requested...");
             }
         }
+
+        _listening = false;
     }
 
     public void Disconnect()
     {
-        if (_tcpClient is {Connected: true})
+        if (_tcpClient is not {Connected: true})
         {
-            _logger.LogDebug("Disconnecting from EVL device...");
-
-            _cancellationTokenSource.Cancel();
-            
-            _tcpClient.Close();
+            return;
         }
+        
+        _logger.LogDebug("Disconnecting from EVL device...");
+
+        _cancellationTokenSource.Cancel();
+            
+        _tcpClient.Close();
     }
 
     public void Dispose()
