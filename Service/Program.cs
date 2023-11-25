@@ -1,12 +1,9 @@
-﻿#region
-
-using CommandLine;
+﻿using Service;
 using Common.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
-#endregion
+using Network;
 
 var builder = Host.CreateApplicationBuilder(args);
 
@@ -23,8 +20,13 @@ builder.Services.AddOptions<LoggingOptions>()
 
 builder.Services.AddHostedService<ConsoleHost>();
 
+builder.Services.AddHostedService<EvlDaemonService>();
+
+builder.Services.AddSingleton<IEvlClient, NetworkEvlClient>();
+
 builder.Services.AddLogging();
 
 using var host = builder.Build();
 
-await host.StartAsync();
+host.Run();
+
