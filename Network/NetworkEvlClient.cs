@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Sockets;
+using Common.Exceptions;
 using Common.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -77,25 +78,28 @@ public sealed class NetworkEvlClient : IDisposable, IEvlClient
 
         var stream = _tcpClient.GetStream();
 
-        var bytesRead = await stream.ReadAsync(buffer.AsMemory(0, BufferSize), linkedToken);
-
-        while (bytesRead > 0 && !linkedToken.IsCancellationRequested)
+        while (true)
         {
-            _logger.LogTrace("Received: {Data} ", System.Text.Encoding.UTF8.GetString(buffer));
-
-            // TODO: Parse data
-
+            int bytesRead;
+            
             try
             {
-                bytesRead = await stream.ReadAsync(buffer.AsMemory(0, BufferSize), linkedToken);
+               bytesRead = await stream.ReadAsync(buffer.AsMemory(0, BufferSize), linkedToken);
             }
-            catch (OperationCanceledException e)
+            catch (OperationCanceledException)
             {
                 _logger.LogDebug("Cancellation requested...");
-            }
-        }
 
-        _listening = false;
+                throw;
+            }
+
+            if (bytesRead <= 0)
+            {
+                throw new DeviceDisconnectException("Disconnected from EvlDaemon device!");
+            }
+            
+            _logger.LogTrace("Received: {Data} ", System.Text.Encoding.UTF8.GetString(buffer));
+        }
     }
 
     public void Disconnect()
@@ -110,6 +114,8 @@ public sealed class NetworkEvlClient : IDisposable, IEvlClient
         _cancellationTokenSource.Cancel();
             
         _tcpClient.Close();
+
+        _listening = false;
     }
 
     public void Dispose()
