@@ -21,7 +21,7 @@ public class ConsoleHost : IHostedService
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
-        _logger.LogDebug("Stopping EvlDaemon...");
+        _logger.LogDebug("Stopping EvlDaemon");
 
         return Task.CompletedTask;
     }

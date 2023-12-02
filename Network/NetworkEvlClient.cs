@@ -22,14 +22,14 @@ public sealed class NetworkEvlClient : IDisposable, IEvlClient
     private const int BufferSize = 1024;
 
     private readonly CancellationTokenSource _cancellationTokenSource;
-    
+
     public NetworkEvlClient(IOptions<ConnectionOptions> connectionOptions, ILogger<NetworkEvlClient> logger)
     {
         _port = connectionOptions.Value.Port;
 
         if (!IPAddress.TryParse(connectionOptions.Value.Ip, out var ipAddress))
         {
-            throw new ConfigurationException($"Invalid IP address format: {connectionOptions.Value.Ip}");
+            throw new ConfigurationException($"Invalid IP address format: {connectionOptions.Value.Ip}.");
         }
 
         _ipAddress = ipAddress;
@@ -41,7 +41,7 @@ public sealed class NetworkEvlClient : IDisposable, IEvlClient
         _listening = false;
 
         _cancellationTokenSource = new CancellationTokenSource();
-        
+
     }
 
     public void Connect()
@@ -50,7 +50,7 @@ public sealed class NetworkEvlClient : IDisposable, IEvlClient
         {
             throw new InvalidOperationException("EvlClient is already connected.");
         }
-        
+
         _tcpClient.Connect(_ipAddress, _port);
     }
 
@@ -63,7 +63,7 @@ public sealed class NetworkEvlClient : IDisposable, IEvlClient
 
         if (_listening)
         {
-            throw new InvalidOperationException("EvlClient is already listening for events!");
+            throw new InvalidOperationException("EvlClient is already listening for events.");
         }
 
         _listening = true;
@@ -81,23 +81,23 @@ public sealed class NetworkEvlClient : IDisposable, IEvlClient
         while (true)
         {
             int bytesRead;
-            
+
             try
             {
                bytesRead = await stream.ReadAsync(buffer.AsMemory(0, BufferSize), linkedToken);
             }
             catch (OperationCanceledException)
             {
-                _logger.LogDebug("Cancellation requested...");
+                _logger.LogDebug("Cancellation requested");
 
                 throw;
             }
 
             if (bytesRead <= 0)
             {
-                throw new DeviceDisconnectException("Disconnected from EvlDaemon device!");
+                throw new DeviceDisconnectException("Disconnected from EVL device.");
             }
-            
+
             _logger.LogTrace("Received: {Data} ", System.Text.Encoding.UTF8.GetString(buffer));
         }
     }
@@ -108,11 +108,11 @@ public sealed class NetworkEvlClient : IDisposable, IEvlClient
         {
             return;
         }
-        
-        _logger.LogDebug("Disconnecting from EVL device...");
+
+        _logger.LogDebug("Closing connection to EVL device");
 
         _cancellationTokenSource.Cancel();
-            
+
         _tcpClient.Close();
 
         _listening = false;
@@ -120,8 +120,8 @@ public sealed class NetworkEvlClient : IDisposable, IEvlClient
 
     public void Dispose()
     {
-        _logger.LogDebug("Disposing NetworkEvlClient...");
-        
+        _logger.LogDebug("Disposing NetworkEvlClient");
+
         Disconnect();
     }
 }
