@@ -98,6 +98,11 @@ public sealed class NetworkEvlClient : IDisposable, IEvlClient
                 throw new DeviceDisconnectException("Disconnected from EVL device.");
             }
 
+            // Check if we have existing partial command and append received data to it
+            // If received doesn't end with CRLF we have partial command
+            // Split on CRLF, set last as partial command
+            // Handle completed commands
+
             _logger.LogTrace("Received: {Data} ", System.Text.Encoding.UTF8.GetString(buffer));
         }
     }
