@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace Common.Options;
+namespace Common.Exceptions;
 
 public class ConfigurationException : Exception
 {
