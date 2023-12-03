@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace System;
+namespace Service;
 
 public class ConsoleHost : IHostedService
 {
