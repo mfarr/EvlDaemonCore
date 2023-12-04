@@ -9,50 +9,67 @@ public static class TpiParser
     private static readonly string InputStringTooShortMessage =
         $"Input must be at least {CommandLength + ChecksumLength} characters.";
 
-    public static string CalculateChecksum(string value)
+    /// <summary>
+    /// Calculates the TPI compatible checksum of the <paramref name="input"/> string.
+    /// </summary>
+    /// <param name="input">The input string value</param>
+    /// <returns>The calculated checksum value</returns>
+    public static string CalculateChecksum(string input)
     {
-        var sum = value.Sum(c => c);
+        var sum = input.Sum(c => c);
 
         sum &= 255;
 
         return sum.ToString("X2");
     }
 
-    public static string ParseCommand(string input)
+    /// <summary>
+    /// Parses the command string from <paramref name="payload"/>, a properly formatted TPI payload string.
+    /// </summary>
+    /// <param name="payload">TPI payload string</param>
+    /// <returns>The parsed command string</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="payload"/> is not a properly formatted TPI payload string</exception>
+    public static string ParseCommand(string payload)
     {
-        if (input.Length < CommandLength + ChecksumLength)
+        if (payload.Length < CommandLength + ChecksumLength)
         {
-            throw new ArgumentException(InputStringTooShortMessage, nameof(input));
+            throw new ArgumentException(InputStringTooShortMessage, nameof(payload));
         }
 
-        return input[..CommandLength];
-    }
-
-    public static string ParseChecksum(string input)
-    {
-        if (input.Length < CommandLength + ChecksumLength)
-        {
-            throw new ArgumentException(InputStringTooShortMessage, nameof(input));
-        }
-
-        return input[^ChecksumLength..];
+        return payload[..CommandLength];
     }
 
     /// <summary>
-    /// Validates that <paramref name="input"/> is a properly formatted TPI command string with a valid checksum.
+    /// Parses the checksum string from <paramref name="payload"/>, a properly formatted TPI payload string.
     /// </summary>
-    /// <param name="input">String to validate</param>
-    /// <returns>True, if the string is a properly formatted TPI command string with a valid checksum</returns>
-    public static bool Validate(string input)
+    /// <param name="payload">TPI payload string</param>
+    /// <returns>The parsed checksum string</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="payload"/> is not a properly formatted TPI payload string</exception>
+    public static string ParseChecksum(string payload)
     {
-        if (input.Length < CommandLength + ChecksumLength)
+        if (payload.Length < CommandLength + ChecksumLength)
+        {
+            throw new ArgumentException(InputStringTooShortMessage, nameof(payload));
+        }
+
+        return payload[^ChecksumLength..];
+    }
+
+    /// <summary>
+    /// Validates that <paramref name="payload"/> is a properly formatted TPI payload string with a valid checksum.
+    /// </summary>
+    /// <param name="payload">TPI payload string</param>
+    /// <returns>True, if the string is a properly formatted TPI payload string with a valid checksum</returns>
+    public static bool Validate(string payload)
+    {
+        if (payload.Length < CommandLength + ChecksumLength)
         {
             return false;
         }
 
-        var checksum = ParseChecksum(input);
+        var checksum = ParseChecksum(payload);
 
-        var value = input[..^ChecksumLength];
+        var value = payload[..^ChecksumLength];
 
         var calculated = CalculateChecksum(value);
 
