@@ -19,6 +19,16 @@ public static class TpiParser
         return true;
     }
 
+    public static string ParseCommand(string input)
+    {
+        if (input.Length < CommandLength + ChecksumLength)
+        {
+            throw new ArgumentException(InputStringTooShortMessage, nameof(input));
+        }
+
+        return input[..CommandLength];
+    }
+
     public static string ParseChecksum(string input)
     {
         if (input.Length < CommandLength + ChecksumLength)
@@ -26,6 +36,6 @@ public static class TpiParser
             throw new ArgumentException(InputStringTooShortMessage, nameof(input));
         }
 
-        return input[..^2];
+        return input[^ChecksumLength..];
     }
 }
