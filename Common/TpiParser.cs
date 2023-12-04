@@ -18,16 +18,6 @@ public static class TpiParser
         return sum.ToString("X2");
     }
 
-    public static bool ValidateChecksum(string input)
-    {
-        if (input.Length < CommandLength + ChecksumLength)
-        {
-            throw new ArgumentException(InputStringTooShortMessage, nameof(input));
-        }
-
-        return true;
-    }
-
     public static string ParseCommand(string input)
     {
         if (input.Length < CommandLength + ChecksumLength)
@@ -46,5 +36,26 @@ public static class TpiParser
         }
 
         return input[^ChecksumLength..];
+    }
+
+    /// <summary>
+    /// Validates that <paramref name="input"/> is a properly formatted TPI command string with a valid checksum.
+    /// </summary>
+    /// <param name="input">String to validate</param>
+    /// <returns>True, if the string is a properly formatted TPI command string with a valid checksum</returns>
+    public static bool Validate(string input)
+    {
+        if (input.Length < CommandLength + ChecksumLength)
+        {
+            return false;
+        }
+
+        var checksum = ParseChecksum(input);
+
+        var value = input[..^ChecksumLength];
+
+        var calculated = CalculateChecksum(value);
+
+        return checksum == calculated;
     }
 }

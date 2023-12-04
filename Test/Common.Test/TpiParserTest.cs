@@ -52,4 +52,15 @@ public class TpiParserTest
 
         Assert.Throws<ArgumentException>(() => TpiParser.ParseCommand(input));
     }
+
+    [Theory]
+    [InlineData("005user54", true)]
+    [InlineData("005userAB", false)]
+    [InlineData("AB", false)]
+    public void Validate_ShouldCorrectlyValidateInput(string input, bool expected)
+    {
+        var actual = TpiParser.Validate(input);
+
+        Assert.Equal(expected, actual);
+    }
 }
