@@ -9,6 +9,15 @@ public static class TpiParser
     private static readonly string InputStringTooShortMessage =
         $"Input must be at least {CommandLength + ChecksumLength} characters.";
 
+    public static string CalculateChecksum(string value)
+    {
+        var sum = value.Sum(c => c);
+
+        sum &= 255;
+
+        return sum.ToString("X2");
+    }
+
     public static bool ValidateChecksum(string input)
     {
         if (input.Length < CommandLength + ChecksumLength)
