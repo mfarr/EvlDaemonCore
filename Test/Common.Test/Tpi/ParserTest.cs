@@ -1,6 +1,8 @@
-namespace Common.Test;
+namespace Common.Test.Tpi;
 
-public class TpiTest
+using Common.Tpi;
+
+public class ParserTest
 {
     [Theory]
     [InlineData("6543", "D2")]
@@ -8,7 +10,7 @@ public class TpiTest
     [InlineData("005123456", "CA")]
     public void CalculateChecksum_ShouldCalculateChecksum(string input, string expected)
     {
-        var actual = Tpi.CalculateChecksum(input);
+        var actual = Parser.CalculateChecksum(input);
 
         Assert.Equal(expected, actual);
     }
@@ -20,7 +22,7 @@ public class TpiTest
 
         const string expected = "CD";
 
-        var actual = Tpi.ParseChecksum(input);
+        var actual = Parser.ParseChecksum(input);
 
         Assert.Equal(expected, actual);
     }
@@ -30,7 +32,7 @@ public class TpiTest
     {
         const string input = "505";
 
-        Assert.Throws<ArgumentException>(() => Tpi.ParseChecksum(input));
+        Assert.Throws<ArgumentException>(() => Parser.ParseChecksum(input));
     }
 
     [Fact]
@@ -40,7 +42,7 @@ public class TpiTest
 
         const string expected = "505";
 
-        var actual = Tpi.ParseCommand(input);
+        var actual = Parser.ParseCommand(input);
 
         Assert.Equal(expected, actual);
     }
@@ -50,7 +52,7 @@ public class TpiTest
     {
         const string input = "CD";
 
-        Assert.Throws<ArgumentException>(() => Tpi.ParseCommand(input));
+        Assert.Throws<ArgumentException>(() => Parser.ParseCommand(input));
     }
 
     [Fact]
@@ -60,7 +62,7 @@ public class TpiTest
 
         const int expected = 3;
 
-        var actual = Tpi.ParsePartition(input);
+        var actual = Parser.ParsePartition(input);
 
         Assert.Equal(expected, actual);
     }
@@ -72,7 +74,7 @@ public class TpiTest
     {
         const int expected = 0;
 
-        var actual = Tpi.ParsePartition(input);
+        var actual = Parser.ParsePartition(input);
 
         Assert.Equal(expected, actual);
     }
@@ -84,7 +86,7 @@ public class TpiTest
 
         const string expected = "005";
 
-        var actual = Tpi.ParseZone(input);
+        var actual = Parser.ParseZone(input);
 
         Assert.Equal(expected, actual);
     }
@@ -96,7 +98,7 @@ public class TpiTest
 
         const string expected = "";
 
-        var actual = Tpi.ParseZone(input);
+        var actual = Parser.ParseZone(input);
 
         Assert.Equal(expected, actual);
     }
@@ -107,7 +109,7 @@ public class TpiTest
     [InlineData("AB", false)]
     public void Validate_ShouldCorrectlyValidateInput(string input, bool expected)
     {
-        var actual = Tpi.Validate(input);
+        var actual = Parser.Validate(input);
 
         Assert.Equal(expected, actual);
     }

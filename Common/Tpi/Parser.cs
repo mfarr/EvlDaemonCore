@@ -1,13 +1,9 @@
-﻿namespace Common;
+﻿namespace Common.Tpi;
 
-public static class Tpi
+public static class Parser
 {
-    public const int CommandLength = 3;
-
-    public const int ChecksumLength = 2;
-
     private static readonly string InputStringTooShortMessage =
-        $"Input must be at least {CommandLength + ChecksumLength} characters.";
+        $"Input must be at least {Constants.CommandLength + Constants.ChecksumLength} characters.";
 
     /// <summary>
     /// Calculates the TPI compatible checksum of the <paramref name="input"/> string.
@@ -31,12 +27,12 @@ public static class Tpi
     /// <exception cref="ArgumentException">Thrown when <paramref name="payload"/> is not a properly formatted TPI payload string</exception>
     public static string ParseChecksum(string payload)
     {
-        if (payload.Length < CommandLength + ChecksumLength)
+        if (payload.Length < Constants.CommandLength + Constants.ChecksumLength)
         {
             throw new ArgumentException(InputStringTooShortMessage, nameof(payload));
         }
 
-        return payload[^ChecksumLength..];
+        return payload[^Constants.ChecksumLength..];
     }
 
     /// <summary>
@@ -47,12 +43,12 @@ public static class Tpi
     /// <exception cref="ArgumentException">Thrown when <paramref name="payload"/> is not a properly formatted TPI payload string</exception>
     public static string ParseCommand(string payload)
     {
-        if (payload.Length < CommandLength + ChecksumLength)
+        if (payload.Length < Constants.CommandLength + Constants.ChecksumLength)
         {
             throw new ArgumentException(InputStringTooShortMessage, nameof(payload));
         }
 
-        return payload[..CommandLength];
+        return payload[..Constants.CommandLength];
     }
 
     /// <summary>
@@ -87,14 +83,14 @@ public static class Tpi
     /// <returns>True, if the string is a properly formatted TPI payload string with a valid checksum</returns>
     public static bool Validate(string payload)
     {
-        if (payload.Length < CommandLength + ChecksumLength)
+        if (payload.Length < Constants.CommandLength + Constants.ChecksumLength)
         {
             return false;
         }
 
         var checksum = ParseChecksum(payload);
 
-        var value = payload[..^ChecksumLength];
+        var value = payload[..^Constants.ChecksumLength];
 
         var calculated = CalculateChecksum(value);
 
