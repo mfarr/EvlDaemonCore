@@ -24,22 +24,6 @@ public static class Tpi
     }
 
     /// <summary>
-    /// Parses the command string from <paramref name="payload"/>, a properly formatted TPI payload string.
-    /// </summary>
-    /// <param name="payload">TPI payload string</param>
-    /// <returns>The parsed command string</returns>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="payload"/> is not a properly formatted TPI payload string</exception>
-    public static string ParseCommand(string payload)
-    {
-        if (payload.Length < CommandLength + ChecksumLength)
-        {
-            throw new ArgumentException(InputStringTooShortMessage, nameof(payload));
-        }
-
-        return payload[..CommandLength];
-    }
-
-    /// <summary>
     /// Parses the checksum string from <paramref name="payload"/>, a properly formatted TPI payload string.
     /// </summary>
     /// <param name="payload">TPI payload string</param>
@@ -53,6 +37,22 @@ public static class Tpi
         }
 
         return payload[^ChecksumLength..];
+    }
+
+    /// <summary>
+    /// Parses the command string from <paramref name="payload"/>, a properly formatted TPI payload string.
+    /// </summary>
+    /// <param name="payload">TPI payload string</param>
+    /// <returns>The parsed command string</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="payload"/> is not a properly formatted TPI payload string</exception>
+    public static string ParseCommand(string payload)
+    {
+        if (payload.Length < CommandLength + ChecksumLength)
+        {
+            throw new ArgumentException(InputStringTooShortMessage, nameof(payload));
+        }
+
+        return payload[..CommandLength];
     }
 
     /// <summary>
