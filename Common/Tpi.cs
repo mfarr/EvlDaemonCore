@@ -1,6 +1,6 @@
 ﻿namespace Common;
 
-public static class TpiParser
+public static class Tpi
 {
     public const int CommandLength = 3;
 
@@ -53,6 +53,31 @@ public static class TpiParser
         }
 
         return payload[^ChecksumLength..];
+    }
+
+    /// <summary>
+    /// Parses the partition number from a properly formatted TPI payload data string.
+    /// </summary>
+    /// <param name="data">TPI payload data string</param>
+    /// <returns>The parsed partition number, or 0 if a value couldn't be parsed</returns>
+    public static int ParsePartition(string data)
+    {
+        if (string.IsNullOrEmpty(data))
+        {
+            return 0;
+        }
+
+        return int.TryParse(data[0].ToString(), out var partition) ? partition : 0;
+    }
+
+    /// <summary>
+    /// Parses the three character zone string from a properly formatted TPI payload data string.
+    /// </summary>
+    /// <param name="data">TPI payload data string</param>
+    /// <returns>The parsed zone string, or an empty string if a value couldn't be parsed</returns>
+    public static string ParseZone(string data)
+    {
+        return data.Length < 3 ? "" : data[..3];
     }
 
     /// <summary>
