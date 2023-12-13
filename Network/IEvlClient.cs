@@ -1,6 +1,6 @@
 namespace Network;
 
-public interface IEvlClient
+public interface IEvlClient : IDisposable
 {
     public void Connect();
 

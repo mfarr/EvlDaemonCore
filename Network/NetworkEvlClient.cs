@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 
 namespace Network;
 
-public sealed class NetworkEvlClient : IDisposable, IEvlClient
+public sealed class NetworkEvlClient : IEvlClient
 {
     private readonly int _port;
 
@@ -20,6 +20,8 @@ public sealed class NetworkEvlClient : IDisposable, IEvlClient
     private bool _listening;
 
     private const int BufferSize = 1024;
+
+    private const string Terminator = "\r\n";
 
     private readonly CancellationTokenSource _cancellationTokenSource;
 
@@ -41,7 +43,6 @@ public sealed class NetworkEvlClient : IDisposable, IEvlClient
         _listening = false;
 
         _cancellationTokenSource = new CancellationTokenSource();
-
     }
 
     public void Connect()
@@ -76,6 +77,8 @@ public sealed class NetworkEvlClient : IDisposable, IEvlClient
 
         var buffer = new byte[BufferSize];
 
+        var incoming = "";
+
         var stream = _tcpClient.GetStream();
 
         while (true)
@@ -98,12 +101,28 @@ public sealed class NetworkEvlClient : IDisposable, IEvlClient
                 throw new DeviceDisconnectException("Disconnected from EVL device.");
             }
 
-            // Check if we have existing partial command and append received data to it
-            // If received doesn't end with CRLF we have partial command
-            // Split on CRLF, set last as partial command
-            // Handle completed commands
+            incoming += System.Text.Encoding.UTF8.GetString(buffer[..bytesRead]);
 
-            _logger.LogTrace("Received: {Data} ", System.Text.Encoding.UTF8.GetString(buffer));
+            var payloads = incoming.Split(Terminator).ToList();
+
+            if (!incoming.EndsWith(Terminator))
+            {
+                incoming = payloads[^1];
+
+                HandlePayloads(payloads[..^2]);
+            }
+            else
+            {
+                HandlePayloads(payloads[..^1]);
+            }
+        }
+    }
+
+    private void HandlePayloads(IEnumerable<string> payloads)
+    {
+        foreach (var payload in payloads)
+        {
+            _logger.LogTrace("Payload: {Payload}", payload);
         }
     }
 
