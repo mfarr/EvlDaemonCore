@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using Common.Exceptions;
 using Common.Options;
 using Microsoft.Extensions.Logging;
@@ -71,7 +72,8 @@ public sealed class NetworkEvlClient : IEvlClient
 
         var internalCancellationToken = _cancellationTokenSource.Token;
 
-        using var linkedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(internalCancellationToken, externalCancellationToken);
+        using var linkedTokenSource =
+            CancellationTokenSource.CreateLinkedTokenSource(internalCancellationToken, externalCancellationToken);
 
         var linkedToken = linkedTokenSource.Token;
 
@@ -87,7 +89,7 @@ public sealed class NetworkEvlClient : IEvlClient
 
             try
             {
-               bytesRead = await stream.ReadAsync(buffer.AsMemory(0, BufferSize), linkedToken);
+                bytesRead = await stream.ReadAsync(buffer.AsMemory(0, BufferSize), linkedToken);
             }
             catch (OperationCanceledException)
             {
@@ -101,7 +103,7 @@ public sealed class NetworkEvlClient : IEvlClient
                 throw new DeviceDisconnectException("Disconnected from EVL device.");
             }
 
-            incoming += System.Text.Encoding.UTF8.GetString(buffer[..bytesRead]);
+            incoming += Encoding.UTF8.GetString(buffer[..bytesRead]);
 
             var payloads = incoming.Split(Terminator).ToList();
 

@@ -1,6 +1,6 @@
 ﻿namespace Common.Tpi.Models;
 
-public class Payload
+public record Payload
 {
     public Command Command { get; }
 
@@ -8,6 +8,11 @@ public class Payload
 
     public string Checksum { get; }
 
+    /// <summary>
+    ///     Represents a payload that consists of a command, optional data, and a calculated checksum.
+    /// </summary>
+    /// <param name="command">The command associated with the payload.</param>
+    /// <param name="data">The optional data associated with the payload. Defaults to null.</param>
     public Payload(Command command, Data? data = null)
     {
         Command = command;

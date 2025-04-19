@@ -9,7 +9,7 @@ public class EvlDaemonService : BackgroundService
     private readonly ILogger<EvlDaemonService> _logger;
 
     private readonly IEvlClient _evlClient;
-    
+
     public EvlDaemonService(IEvlClient evlClient, ILogger<EvlDaemonService> logger)
     {
         _evlClient = evlClient;
@@ -20,7 +20,7 @@ public class EvlDaemonService : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         _evlClient.Connect();
-        
+
         await _evlClient.ListenForEventsAsync(cancellationToken);
     }
 
@@ -34,9 +34,9 @@ public class EvlDaemonService : BackgroundService
     public override Task StopAsync(CancellationToken cancellationToken)
     {
         _logger.LogDebug("Stopping network service");
-        
+
         _evlClient.Disconnect();
-        
+
         return base.StopAsync(cancellationToken);
     }
 }

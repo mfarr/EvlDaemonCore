@@ -23,7 +23,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Common\Common.csproj"/>
-        <ProjectReference Include="..\Network\Network.csproj" />
+        <ProjectReference Include="..\Network\Network.csproj"/>
     </ItemGroup>
 
 </Project>

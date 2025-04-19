@@ -1,12 +1,16 @@
 ﻿namespace Common.Tpi;
 
+/// <summary>
+///     Provides methods for parsing and handling TPI data, including checksum calculation
+///     and various segment extraction from TPI-formatted payload strings.
+/// </summary>
 public static class Parser
 {
     private static readonly string InputStringTooShortMessage =
         $"Input must be at least {Constants.CommandLength + Constants.ChecksumLength} characters.";
 
     /// <summary>
-    /// Calculates the TPI compatible checksum of the <paramref name="input"/> string.
+    ///     Calculates the TPI compatible checksum of the <paramref name="input" /> string.
     /// </summary>
     /// <param name="input">The input string value</param>
     /// <returns>The calculated checksum value</returns>
@@ -20,11 +24,14 @@ public static class Parser
     }
 
     /// <summary>
-    /// Parses the checksum string from <paramref name="payload"/>, a properly formatted TPI payload string.
+    ///     Parses the checksum string from <paramref name="payload" />, a properly formatted TPI payload string.
     /// </summary>
     /// <param name="payload">TPI payload string</param>
     /// <returns>The parsed checksum string</returns>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="payload"/> is not a properly formatted TPI payload string</exception>
+    /// <exception cref="ArgumentException">
+    ///     Thrown when <paramref name="payload" /> is not a properly formatted TPI payload
+    ///     string
+    /// </exception>
     public static string ParseChecksum(string payload)
     {
         if (payload.Length < Constants.CommandLength + Constants.ChecksumLength)
@@ -36,11 +43,14 @@ public static class Parser
     }
 
     /// <summary>
-    /// Parses the command string from <paramref name="payload"/>, a properly formatted TPI payload string.
+    ///     Parses the command string from <paramref name="payload" />, a properly formatted TPI payload string.
     /// </summary>
     /// <param name="payload">TPI payload string</param>
     /// <returns>The parsed command string</returns>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="payload"/> is not a properly formatted TPI payload string</exception>
+    /// <exception cref="ArgumentException">
+    ///     Thrown when <paramref name="payload" /> is not a properly formatted TPI payload
+    ///     string
+    /// </exception>
     public static string ParseCommand(string payload)
     {
         if (payload.Length < Constants.CommandLength + Constants.ChecksumLength)
@@ -52,7 +62,7 @@ public static class Parser
     }
 
     /// <summary>
-    /// Parses the partition number from a properly formatted TPI payload data string.
+    ///     Parses the partition number from a properly formatted TPI payload data string.
     /// </summary>
     /// <param name="data">TPI payload data string</param>
     /// <returns>The parsed partition number, or 0 if a value couldn't be parsed</returns>
@@ -67,7 +77,7 @@ public static class Parser
     }
 
     /// <summary>
-    /// Parses the three character zone string from a properly formatted TPI payload data string.
+    ///     Parses the three-character zone string from a properly formatted TPI payload data string.
     /// </summary>
     /// <param name="data">TPI payload data string</param>
     /// <returns>The parsed zone string, or an empty string if a value couldn't be parsed</returns>
@@ -77,7 +87,7 @@ public static class Parser
     }
 
     /// <summary>
-    /// Validates that <paramref name="payload"/> is a properly formatted TPI payload string with a valid checksum.
+    ///     Validates that <paramref name="payload" /> is a properly formatted TPI payload string with a valid checksum.
     /// </summary>
     /// <param name="payload">TPI payload string</param>
     /// <returns>True, if the string is a properly formatted TPI payload string with a valid checksum</returns>

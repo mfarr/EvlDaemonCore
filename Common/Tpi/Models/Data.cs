@@ -1,22 +1,13 @@
 ﻿namespace Common.Tpi.Models;
 
-public class Data(string value, int? partition = null, string? zone = null)
+/// <summary>
+///     Represents a data structure that combines a string value with optional partition and zone information.
+/// </summary>
+/// <param name="Value">The value representing the main data payload.</param>
+/// <param name="Partition">An optional partition identifier.</param>
+/// <param name="Zone">An optional zone identifier.</param>
+public record Data(string Value, int? Partition = null, string? Zone = null)
 {
-    /// <summary>
-    /// Partition data, if present
-    /// </summary>
-    public int? Partition { get; } = partition;
-
-    /// <summary>
-    /// Zone data, if present
-    /// </summary>
-    public string? Zone { get; } = zone;
-
-    /// <summary>
-    /// Value of data, if any, excluding partition and zone.
-    /// </summary>
-    public string Value { get; } = value;
-
     public override string ToString()
     {
         return $"{Partition}{Zone}{Value}";

@@ -1,6 +1,6 @@
-namespace Common.Test.Tpi;
-
 using Common.Tpi;
+
+namespace Common.Test.Tpi;
 
 public class ParserTest
 {

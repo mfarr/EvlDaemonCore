@@ -1,9 +1,9 @@
-﻿using Service;
-using Common.Options;
+﻿using Common.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Network;
+using Service;
 
 var builder = Host.CreateApplicationBuilder(args);
 
@@ -29,4 +29,3 @@ builder.Services.AddLogging();
 using var host = builder.Build();
 
 host.Run();
-
