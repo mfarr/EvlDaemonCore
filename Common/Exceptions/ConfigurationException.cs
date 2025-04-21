@@ -1,14 +1,8 @@
-﻿using System.Runtime.Serialization;
-
-namespace Common.Exceptions;
+﻿namespace Common.Exceptions;
 
 public class ConfigurationException : Exception
 {
     public ConfigurationException()
-    {
-    }
-
-    protected ConfigurationException(SerializationInfo info, StreamingContext context) : base(info, context)
     {
     }
 

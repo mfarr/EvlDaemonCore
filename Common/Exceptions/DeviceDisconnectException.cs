@@ -1,14 +1,8 @@
-using System.Runtime.Serialization;
-
 namespace Common.Exceptions;
 
 public class DeviceDisconnectException : Exception
 {
     public DeviceDisconnectException()
-    {
-    }
-
-    protected DeviceDisconnectException(SerializationInfo info, StreamingContext context) : base(info, context)
     {
     }
 
