@@ -1,9 +1,9 @@
-﻿using Common.Options;
+﻿using EvlDaemon.Core.Network;
+using EvlDaemon.Core.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Network;
-using Service;
+using EvlDaemon.Service;
 
 var builder = Host.CreateApplicationBuilder(args);
 

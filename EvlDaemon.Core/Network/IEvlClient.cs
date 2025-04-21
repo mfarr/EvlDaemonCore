@@ -1,4 +1,4 @@
-namespace Network;
+namespace EvlDaemon.Core.Network;
 
 public interface IEvlClient : IDisposable
 {

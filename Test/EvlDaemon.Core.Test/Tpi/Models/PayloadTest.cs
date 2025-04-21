@@ -1,6 +1,6 @@
-﻿using Common.Tpi.Models;
+﻿using EvlDaemon.Core.Tpi.Models;
 
-namespace Common.Test.Tpi.Models;
+namespace EvlDaemon.Core.Test.Tpi.Models;
 
 public class PayloadTest
 {

@@ -1,4 +1,4 @@
-﻿namespace Common.Tpi;
+﻿namespace EvlDaemon.Core.Tpi;
 
 /// <summary>
 ///     Provides methods for parsing and handling TPI data, including checksum calculation

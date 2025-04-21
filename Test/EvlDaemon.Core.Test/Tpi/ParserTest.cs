@@ -1,6 +1,6 @@
-using Common.Tpi;
+using EvlDaemon.Core.Tpi;
 
-namespace Common.Test.Tpi;
+namespace EvlDaemon.Core.Test.Tpi;
 
 public class ParserTest
 {

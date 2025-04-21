@@ -1,4 +1,4 @@
-﻿namespace Common.Tpi.Models;
+﻿namespace EvlDaemon.Core.Tpi.Models;
 
 /// <summary>
 ///     Represents a data structure that combines a string value with optional partition and zone information.

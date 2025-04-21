@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using EvlDaemon.Core.Network;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Network;
 
-namespace Service;
+namespace EvlDaemon.Service;
 
 public class EvlDaemonService : BackgroundService
 {

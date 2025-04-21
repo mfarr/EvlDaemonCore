@@ -1,12 +1,12 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using Common.Exceptions;
-using Common.Options;
+using EvlDaemon.Core.Exceptions;
+using EvlDaemon.Core.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Network;
+namespace EvlDaemon.Core.Network;
 
 public sealed class NetworkEvlClient : IEvlClient
 {

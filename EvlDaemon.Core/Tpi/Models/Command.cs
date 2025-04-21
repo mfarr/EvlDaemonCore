@@ -1,4 +1,4 @@
-﻿namespace Common.Tpi.Models;
+﻿namespace EvlDaemon.Core.Tpi.Models;
 
 /// <summary>
 ///     Represents a command with a name.

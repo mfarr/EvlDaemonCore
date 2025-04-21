@@ -1,4 +1,4 @@
-namespace Common.Tpi;
+namespace EvlDaemon.Core.Tpi;
 
 public static class Constants
 {

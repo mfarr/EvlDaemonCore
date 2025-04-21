@@ -1,4 +1,4 @@
-﻿namespace Common.Tpi.Models;
+﻿namespace EvlDaemon.Core.Tpi.Models;
 
 /// <summary>
 ///     Represents an event that contains a command and optional data associated with it.

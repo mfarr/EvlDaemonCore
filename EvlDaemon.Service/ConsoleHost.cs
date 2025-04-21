@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Service;
+namespace EvlDaemon.Service;
 
 public class ConsoleHost : IHostedService
 {

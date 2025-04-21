@@ -1,4 +1,4 @@
-namespace Common.Options;
+namespace EvlDaemon.Core.Options;
 
 public sealed record ConnectionOptions
 {

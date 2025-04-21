@@ -1,4 +1,4 @@
-namespace Common.Exceptions;
+namespace EvlDaemon.Core.Exceptions;
 
 public class DeviceDisconnectException : Exception
 {
