@@ -2,27 +2,27 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <LangVersion>default</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.5" />
     </ItemGroup>
 
 
     <ItemGroup>
-        <None Remove="appsettings.sample.json"/>
-        <None Remove="appsettings.json"/>
+        <None Remove="appsettings.sample.json" />
+        <None Remove="appsettings.json" />
         <Content Update="appsettings.sample.json">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\EvlDaemon.Core\EvlDaemon.Core.csproj"/>
+        <ProjectReference Include="..\EvlDaemon.Core\EvlDaemon.Core.csproj" />
     </ItemGroup>
 
 </Project>
