@@ -103,7 +103,7 @@ public sealed class NetworkEvlClient : IEvlClient
                 throw new DeviceDisconnectException("Disconnected from EVL device.");
             }
 
-            incoming += Encoding.UTF8.GetString(buffer[..bytesRead]);
+            incoming += Encoding.ASCII.GetString(buffer[..bytesRead]);
 
             var payloads = incoming.Split(Terminator).ToList();
 
@@ -130,7 +130,7 @@ public sealed class NetworkEvlClient : IEvlClient
 
     public void Disconnect()
     {
-        if (_tcpClient is not {Connected: true})
+        if (_tcpClient is not { Connected: true })
         {
             return;
         }
