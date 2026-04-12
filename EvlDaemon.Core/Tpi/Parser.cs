@@ -61,6 +61,21 @@ public static class Parser
         return payload[..Constants.CommandLength];
     }
 
+    public static string ParseData(string rawPayload)
+    {
+        if (rawPayload.Length < Constants.CommandLength + Constants.ChecksumLength)
+        {
+            throw new ArgumentException(InputStringTooShortMessage, nameof(rawPayload));
+        }
+
+        if (rawPayload.Length == (Constants.CommandLength + Constants.ChecksumLength))
+        {
+            return "";
+        }
+
+        return rawPayload[Constants.CommandLength..^Constants.ChecksumLength];
+    }
+
     /// <summary>
     ///     Parses the partition number from a properly formatted TPI payload data string.
     /// </summary>
@@ -87,20 +102,20 @@ public static class Parser
     }
 
     /// <summary>
-    ///     Validates that <paramref name="payload" /> is a properly formatted TPI payload string with a valid checksum.
+    ///     Validates that <paramref name="rawPayload" /> is a properly formatted TPI payload string with a valid checksum.
     /// </summary>
-    /// <param name="payload">TPI payload string</param>
+    /// <param name="rawPayload">TPI payload string</param>
     /// <returns>True, if the string is a properly formatted TPI payload string with a valid checksum</returns>
-    public static bool Validate(string payload)
+    public static bool ValidateRawPayload(string rawPayload)
     {
-        if (payload.Length < Constants.CommandLength + Constants.ChecksumLength)
+        if (rawPayload.Length < Constants.CommandLength + Constants.ChecksumLength)
         {
             return false;
         }
 
-        var checksum = ParseChecksum(payload);
+        var checksum = ParseChecksum(rawPayload);
 
-        var value = payload[..^Constants.ChecksumLength];
+        var value = rawPayload[..^Constants.ChecksumLength];
 
         var calculated = CalculateChecksum(value);
 

@@ -109,7 +109,49 @@ public class ParserTest
     [InlineData("AB", false)]
     public void Validate_ShouldCorrectlyValidateInput(string input, bool expected)
     {
-        var actual = Parser.Validate(input);
+        var actual = Parser.ValidateRawPayload(input);
+
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void ParseData_ShouldReturnDataString_WithValidInput()
+    {
+        const string input = "5053CD";
+
+        const string expected = "3";
+
+        var actual = Parser.ParseData(input);
+
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void ParseData_ShouldReturnEmptyString_WhenNoData()
+    {
+        const string input = "505CD";
+
+        const string expected = "";
+
+        var actual = Parser.ParseData(input);
+
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void ParseData_ShouldThrowException_WithInvalidInput()
+    {
+        const string input = "505";
+
+        Assert.Throws<ArgumentException>(() => Parser.ParseData(input));
+    }
+
+    [Theory]
+    [InlineData("005user54", "user")]
+    [InlineData("5108A0F", "8A")]
+    public void ParseData_ShouldParseDataCorrectly(string input, string expected)
+    {
+        var actual = Parser.ParseData(input);
 
         Assert.Equal(expected, actual);
     }
